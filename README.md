@@ -19,6 +19,6 @@
 
 参见blog:
 
-
+https://aws.amazon.com/cn/blogs/china/gravity2-and-cloudfront-generate-thumbnails-for-s3-object-storage/
 
 
