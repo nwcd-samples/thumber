@@ -9,7 +9,7 @@ class S3Thumber {
     private $region_name;
     
     private $s3;
-
+/* 初始化S3接口 */
     public function S3Thumber($aws_access_key_id, $aws_secret_access_key, $region_name) {
         $this->aws_access_key_id = $aws_access_key_id;
         $this->aws_secret_access_key = $aws_secret_access_key;
@@ -24,7 +24,7 @@ class S3Thumber {
             ]
         ]);
     }
-/* 解析URL，得到需要的resize的高和宽 */
+/* 解析URL，得到缩略图参数，例如/thumb_180_182 表示w180 h182 居中 保持纵横比 */
     private function parse_thumb($key) {
         $key_result = $key;
 
@@ -59,7 +59,7 @@ class S3Thumber {
             }
         }
     }
-/* 解析URL，得到需要裁剪的宽和高，此功能暂未使用*/
+/* 解析URL，剪裁掉部分，格式 imageurl/crop_x_y_w_h */
     private function parse_crop($key) {
         $key_result = $key;
 
@@ -90,7 +90,7 @@ class S3Thumber {
             }
         }
     }
-/* 获取待处理图片的地址 */
+/* 获取待处理图片的地址 下载 */
     private function from_s3($bucket, $key) {
         try {
             $res = $this->s3->getObject([
@@ -104,7 +104,7 @@ class S3Thumber {
             return null;
         }
     }
-/* 处理完图片存储的地址，并设置ACL为public-read */
+/* 处理完图片存储的地址，上传 */
     private function to_s3($img, $bucket, $key, $acl = 'public-read') {
         $fp = fopen("php://memory", 'rw+');
         imagejpeg($img, $fp);
@@ -127,7 +127,7 @@ class S3Thumber {
             return null;
         }
     }
-/* resize图片 */
+/* 取缩略图入口，取图片，计算横纵比，计算剪裁区域， 剪裁、缩小，上传 */
     private function resizeit($bucket, $key, $params) {
         [$w, $h, $src_key] = $params;
         $img = $this->from_s3($bucket, $src_key);
@@ -161,7 +161,7 @@ class S3Thumber {
 
         return [$key, $img_cropped];
     }
-/* crop图片 */
+/* 同上，只不过功能为裁剪 */
     private function cropit($bucket, $key, $params) {
         [$x, $y, $w, $h, $src_key] = $params;
         
@@ -190,7 +190,7 @@ class S3Thumber {
         }
         return [$key, $buffer];
     }
-
+/* 主入口 负责拆分参数 */
     public function justDoit($bucket, $key) {
         $thumb_params = $this->parse_thumb($key);
 
