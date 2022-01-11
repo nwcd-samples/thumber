@@ -24,7 +24,7 @@ class S3Thumber {
             ]
         ]);
     }
-
+/* 解析URL，得到需要的resize的高和宽 */
     private function parse_thumb($key) {
         $key_result = $key;
 
@@ -59,7 +59,7 @@ class S3Thumber {
             }
         }
     }
-
+/* 解析URL，得到需要裁剪的宽和高，此功能暂未使用*/
     private function parse_crop($key) {
         $key_result = $key;
 
@@ -90,7 +90,7 @@ class S3Thumber {
             }
         }
     }
-
+/* 获取待处理图片的地址 */
     private function from_s3($bucket, $key) {
         try {
             $res = $this->s3->getObject([
@@ -104,7 +104,7 @@ class S3Thumber {
             return null;
         }
     }
-
+/* 处理完图片存储的地址，并设置ACL为public-read */
     private function to_s3($img, $bucket, $key, $acl = 'public-read') {
         $fp = fopen("php://memory", 'rw+');
         imagejpeg($img, $fp);
@@ -127,7 +127,7 @@ class S3Thumber {
             return null;
         }
     }
-
+/* resize图片 */
     private function resizeit($bucket, $key, $params) {
         [$w, $h, $src_key] = $params;
         $img = $this->from_s3($bucket, $src_key);
@@ -161,7 +161,7 @@ class S3Thumber {
 
         return [$key, $img_cropped];
     }
-
+/* crop图片 */
     private function cropit($bucket, $key, $params) {
         [$x, $y, $w, $h, $src_key] = $params;
         
