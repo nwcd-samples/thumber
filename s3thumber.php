@@ -127,7 +127,7 @@ class S3Thumber {
             return null;
         }
     }
-/* 取缩略图入口，取图片，计算横纵比，计算剪裁区域， 剪裁、缩小，上传 */
+/* 取缩略图入口，取图片，计算横纵比 、缩小，上传 */
     private function resizeit($bucket, $key, $params) {
         [$w, $h, $src_key] = $params;
         $img = $this->from_s3($bucket, $src_key);
@@ -161,7 +161,7 @@ class S3Thumber {
 
         return [$key, $img_cropped];
     }
-/* 同上，只不过功能为裁剪 */
+/* 取缩略图入口，取图片，计算剪裁区域， 剪裁、上传 */
     private function cropit($bucket, $key, $params) {
         [$x, $y, $w, $h, $src_key] = $params;
         
